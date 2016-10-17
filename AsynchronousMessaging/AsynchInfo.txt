@@ -1,0 +1,5 @@
+This is a modified asynchronous Client-Server chatting program
+Now, both client and server do not need to wait for reply; hence asynchronous.
+
+Written by: Tenzin Thabkhae, on Oct 17, 2016
+(Idea in September)
