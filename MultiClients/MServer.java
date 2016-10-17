@@ -1,6 +1,10 @@
 import java.io.*;
 import java.net.*;
 
+/**
+ * 
+ *
+ */
 class SendMsg extends Thread
 {
 	String name;
@@ -61,7 +65,6 @@ class RecvMsg extends Thread
 }
 class MServer
 {
-
 	public static void main(String args[])
 	{
 		try

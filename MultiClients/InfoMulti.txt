@@ -1,3 +1,12 @@
 This is a multiple client-single server chatting program.
 
 Written by: Tenzin Thabkhae, on Oct 17, 2016
+
+---------------------
+
+Client needs to provide a unique ID (name is the ID in this project) to server. 
+Server saves the name in a list.
+Client then freely sends messages while simultaneously receiving messages from other clients
+# client.java is done
+Server receives messages from the client, and echoes it to every client in the list
+# server.java is done
