@@ -1,3 +1,8 @@
 This is a simple client-server program
 
-Developers: Venkat and Tenzin
+Developers:  Tenzin
+Date modified: Oct 17, 2016
+
+This program sends a string from client to server in an alternating manner.
+ A limitation is client/server needs to wait for a reply from it's counterpart after sending a message.
+ 
