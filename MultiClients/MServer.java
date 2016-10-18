@@ -1,61 +1,40 @@
 import java.io.*;
 import java.net.*;
-
+import java.util.*;
 /**
  * 
  *
  */
-class SendMsg extends Thread
-{
-	String name;
-	Socket s;
-	SendMsg(String _name, Socket _s)
-	{
-		this.name = _name;
-		this.s = _s;
-	}
-	public void run()
-	{
-		try{
-			BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-			PrintWriter out = new PrintWriter(s.getOutputStream(), true);
-			String n;
-			while(true)
-			{
-				this.yield();
-				System.out.print(name + " - ");
-				n = br.readLine();
-				out.println(n);
-			}	
-		} catch(Exception e)
-		{
-			System.out.println(" * * * Unable to send message * * * ");
-		}
-	}
-	
-}
 class RecvMsg extends Thread
 {
-	String name;
-	Socket s;
-	RecvMsg(String _name, Socket _s)
+	MetaData md;					// md.name & md.socket
+	RecvMsg(MetaData _md)
 	{
-		this.name = _name;
-		this.s = _s;
+		md = _md;
 	}
 	public void run()
 	{
 		try
 		{
-			BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+			BufferedReader in = new BufferedReader(new InputStreamReader(md.s.getInputStream()));
+			
 			String str;
 			while(true)
 			{
-				this.yield();
 				str  = in.readLine();
 				System.out.println();
-				System.out.println("From client - " +str);
-				System.out.print(name + " - ");
+				System.out.println(md.name + " - " +str);
+				// okay, client's message printed on server
+				// now print the client's message to every client
+				MetaData cMd;
+				for(int i=0; i<MServer.cList.size(); i++)
+				{
+					cMd = MServer.cList.get(i);
+					PrintWriter out = new PrintWriter(cMd.s.getOutputStream(), true);
+			
+					out.println(md.name + " - " + str);
+				}
+				this.yield();
 			}	
 		} catch (Exception e)
 		{
@@ -63,28 +42,86 @@ class RecvMsg extends Thread
 		}
 	}
 }
+
+
+class Serve extends Thread
+{
+	MetaData md;
+	ServerSocket ss;
+	Socket s;				// s initialized in run() method, not in constructor
+	Serve(ServerSocket _ss)
+	{
+		md = new MetaData();
+		ss = _ss;
+	}
+	Serve(MetaData _md, ServerSocket _ss)
+	{
+		md = _md;
+		ss = _ss;
+	}
+	public void run()
+	{
+		try
+		{
+			s = ss.accept();				// wait until a new client connects to server
+			BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+			md.name = in.readLine();
+			md.s = s;
+			// Assuming the first line from client is always client's name/ID
+			// This idea is established in MClient.java
+			System.out.println(md.name + " connecting..." );
+			
+			MServer.cList.add(md);						// add all incoming client's metadata(name, and socket) to the list
+			
+			Serve next_srv = new Serve(ss);
+			next_srv.start();			// start a new thread to 'prepare' for any new client that may connect to server
+			RecvMsg rMsg = new RecvMsg(md);
+			while(true)
+			{
+				rMsg.start();
+			}
+		} catch (Exception e)
+		{
+			
+		}
+	}
+}
+
+class MetaData
+{
+	String name;
+	Socket s;
+	MetaData()
+	{
+		
+	}
+	MetaData(String _name, Socket _s)
+	{
+		this.name = _name;
+		this.s = _s;
+	}
+}
 class MServer
 {
+	// Class type linked list that stores info of all the client's sockets
+	// called using "MServer.cList"
+	static List<MetaData> cList = Collections.synchronizedList(new LinkedList<MetaData>());
 	public static void main(String args[])
 	{
 		try
 		{
-			System.out.print("Enter your name: ");
-			BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-			String name = br.readLine();
-			
+			MetaData md = new MetaData();
 			ServerSocket ss = new ServerSocket(1500);
 			System.out.println("Server Loaded");
-			Socket s = ss.accept();
-			System.out.println("Client connecting..." );
 			
-			SendMsg sMsg = new SendMsg(name, s);			// parameters: String name, Socket s
-			RecvMsg rMsg = new RecvMsg(name, s);
-			System.out.print(name + " - ");
+			Serve srv = new Serve(ss);
+			srv.start();
+			/////////////////////////////////////////
+			// accept sockets in a new thread..
+			
 			while(true)
 			{
-				sMsg.start();
-				rMsg.start();
+				// do nothing
 			}
 		} catch (Exception e)
 		{

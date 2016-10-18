@@ -1,6 +1,8 @@
 import java.io.*;
 import java.net.*;
+import java.util.*;
 // thread class under java.lang
+
 
 class SendMsg extends Thread
 {
@@ -19,10 +21,10 @@ class SendMsg extends Thread
 			String n;
 			while(true)
 			{
-				this.yield();
 				System.out.print(name + " - ");
 				n = br.readLine();
 				out.println(n);
+				this.yield();
 			}	
 		} catch(Exception e)
 		{
@@ -50,9 +52,8 @@ class RecvMsg extends Thread
 			{
 				this.yield();
 				str  = in.readLine();
-				System.out.println();
-				System.out.println("From server - " +str);
-				System.out.print(name + " - ");
+				
+				System.out.println(str);
 			}	
 		} catch (Exception e)
 		{
@@ -72,11 +73,15 @@ class MClient
 			Scanner sc = new Scanner(System.in);
 			System.out.print("Enter your first name: ");
 			String name = sc.next();
+			sc.close();				// close the Scanner... we use buffered reader from now on
+			
+			BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+			PrintWriter out = new PrintWriter(s.getOutputStream(), true);
+			out.println(name);					// send client's name. Server expects client's name once!
 			
 			SendMsg sMsg = new SendMsg(name, s);
 			RecvMsg rMsg = new RecvMsg(name, s);
 			
-			System.out.print(name + " - ");
 			while(true)
 			{
 				sMsg.start();
