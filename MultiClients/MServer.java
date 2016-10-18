@@ -5,10 +5,51 @@ import java.util.*;
  * 
  *
  */
+ 
+// Don't need RecvMsg, only SendMsg class is enough. Keeping the code in case we need it
+/*
 class RecvMsg extends Thread
 {
 	MetaData md;					// md.name & md.socket
 	RecvMsg(MetaData _md)
+	{
+		md = _md;
+	}
+	public void run()
+	{
+		try
+		{
+			BufferedReader in = new BufferedReader(new InputStreamReader(md.s.getInputStream()));
+			
+			String str;
+			while(true)
+			{
+				str  = in.readLine();
+				System.out.println();
+				System.out.println(md.name + " - " +str);
+				// okay, client's message printed on server
+				// now print the client's message to every client
+				MetaData cMd;
+				for(int i=0; i<MServer.cList.size(); i++)
+				{
+					cMd = MServer.cList.get(i);
+					PrintWriter out = new PrintWriter(cMd.s.getOutputStream(), true);
+			
+					out.println(md.name + " - " + str);
+				}
+				this.yield();
+			}	
+		} catch (Exception e)
+		{
+			System.out.println(" * * * Unable to receive message * * * ");
+		}
+	}
+}
+ */
+class SendMsg extends Thread
+{
+	MetaData md;					// md.name & md.socket
+	SendMsg(MetaData _md)
 	{
 		md = _md;
 	}
@@ -72,13 +113,24 @@ class Serve extends Thread
 			System.out.println(md.name + " connecting..." );
 			
 			MServer.cList.add(md);						// add all incoming client's metadata(name, and socket) to the list
+			System.out.println("\n\n after adding metadata to list\n" );
 			
 			Serve next_srv = new Serve(ss);
+			System.out.println("\n\n after instantiating new Serve\n" );
+			
 			next_srv.start();			// start a new thread to 'prepare' for any new client that may connect to server
-			RecvMsg rMsg = new RecvMsg(md);
+			System.out.println("\n\n after starting serve\n" );
+			
+			SendMsg sMsg = new SendMsg(md);
+			
+			System.out.println("\n\n after send msg\n" );
+			//RecvMsg rMsg = new RecvMsg(md);
+			
+			System.out.println("\n\n after recv msg\n" );
 			while(true)
 			{
-				rMsg.start();
+				sMsg.start();
+				//rMsg.start();
 			}
 		} catch (Exception e)
 		{

@@ -75,10 +75,12 @@ class MClient
 			String name = sc.next();
 			sc.close();				// close the Scanner... we use buffered reader from now on
 			
+			System.out.println("\n\n before sending name to server\n" );
 			BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 			PrintWriter out = new PrintWriter(s.getOutputStream(), true);
 			out.println(name);					// send client's name. Server expects client's name once!
 			
+			System.out.println("\n\n after sending name to server\n" );
 			SendMsg sMsg = new SendMsg(name, s);
 			RecvMsg rMsg = new RecvMsg(name, s);
 			
