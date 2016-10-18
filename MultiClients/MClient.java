@@ -68,7 +68,7 @@ class MClient
 		try
 		{
 			// BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-			Socket s = new Socket("127.0.0.1", 1500);
+			Socket s = new Socket("127.0.0.1", 1501);
 			
 			Scanner sc = new Scanner(System.in);
 			System.out.print("Enter your first name: ");

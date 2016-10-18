@@ -46,10 +46,10 @@ class RecvMsg extends Thread
 	}
 }
  */
-class SendMsg extends Thread
+class s_SendMsg extends Thread
 {
 	MetaData md;					// md.name & md.socket
-	SendMsg(MetaData _md)
+	s_SendMsg(MetaData _md)
 	{
 		md = _md;
 	}
@@ -124,7 +124,7 @@ class Serve extends Thread
 			next_srv.start();			// start a new thread to 'prepare' for any new client that may connect to server
 			System.out.println("\n\n after starting serve\n" );
 			
-			SendMsg sMsg = new SendMsg(md);
+			s_SendMsg sMsg = new s_SendMsg(md);
 			
 			System.out.println("\n\n after send msg\n" );
 			//RecvMsg rMsg = new RecvMsg(md);
@@ -166,7 +166,7 @@ class MServer
 		try
 		{
 			MetaData md = new MetaData();
-			ServerSocket ss = new ServerSocket(1500);
+			ServerSocket ss = new ServerSocket(1501);
 			System.out.println("Server Loaded");
 			
 			Serve srv = new Serve(ss);
