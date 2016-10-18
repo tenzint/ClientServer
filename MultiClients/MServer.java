@@ -59,10 +59,13 @@ class SendMsg extends Thread
 		{
 			BufferedReader in = new BufferedReader(new InputStreamReader(md.s.getInputStream()));
 			
+			System.out.println("\n\n enter sendMsg method\n" );
 			String str;
 			while(true)
 			{
 				str  = in.readLine();
+				System.out.println("\n\n sendMsg - after in.readLine\n" );
+				
 				System.out.println();
 				System.out.println(md.name + " - " +str);
 				// okay, client's message printed on server
