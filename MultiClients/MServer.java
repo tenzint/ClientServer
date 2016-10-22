@@ -71,7 +71,10 @@ class s_SendMsg extends Thread
 				MetaData cMd;
 				for(int i=0; i<MServer.cList.size(); i++)
 				{
+					
 					cMd = MServer.cList.get(i);
+					if (cMd.s == md.s)
+						continue;
 					PrintWriter out = new PrintWriter(cMd.s.getOutputStream(), true);
 			
 					out.println(md.name + " - " + str);
