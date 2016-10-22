@@ -59,12 +59,10 @@ class s_SendMsg extends Thread
 		{
 			BufferedReader in = new BufferedReader(new InputStreamReader(md.s.getInputStream()));
 			
-			System.out.println("\n\n enter sendMsg method\n" );
 			String str;
 			while(true)
 			{
 				str  = in.readLine();
-				System.out.println("\n\n sendMsg - after in.readLine\n" );
 				
 				System.out.println();
 				System.out.println(md.name + " - " +str);
@@ -116,20 +114,15 @@ class Serve extends Thread
 			System.out.println(md.name + " connecting..." );
 			
 			MServer.cList.add(md);						// add all incoming client's metadata(name, and socket) to the list
-			System.out.println("\n\n after adding metadata to list\n" );
 			
 			Serve next_srv = new Serve(ss);
-			System.out.println("\n\n after instantiating new Serve\n" );
 			
 			next_srv.start();			// start a new thread to 'prepare' for any new client that may connect to server
-			System.out.println("\n\n after starting serve\n" );
 			
 			s_SendMsg sMsg = new s_SendMsg(md);
 			
-			System.out.println("\n\n after send msg\n" );
 			//RecvMsg rMsg = new RecvMsg(md);
 			
-			System.out.println("\n\n after recv msg\n" );
 			while(true)
 			{
 				sMsg.start();
@@ -166,7 +159,7 @@ class MServer
 		try
 		{
 			MetaData md = new MetaData();
-			ServerSocket ss = new ServerSocket(1501);
+			ServerSocket ss = new ServerSocket(1502);
 			System.out.println("Server Loaded");
 			
 			Serve srv = new Serve(ss);
